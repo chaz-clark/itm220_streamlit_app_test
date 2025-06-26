@@ -141,3 +141,12 @@ This template is meant for:
 Want more private app slots or memory on Streamlit Cloud? Contact: `support@streamlit.io`
 
 ---
+
+⚠️ Heads-up: When deployed to Streamlit Cloud, your data won’t persist between app restarts or redeploys.
+This is because the app reloads the original database file from GitHub each time.
+
+✅ If you want to keep your data:
+	•	Run the app locally (streamlit run streamlit_app.py)
+	•	Or use a cloud-hosted database (like Supabase or MySQL)
+
+---
