@@ -3,7 +3,6 @@ import sqlite3
 from config import DB_PATH, TABLE_NAME, COLUMNS
 
 # Connect to SQLite DB
-@st.cache_resource
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -18,26 +17,35 @@ def fetch_all():
     return cur.fetchall()
 
 def insert_row(data):
-    conn = get_connection()
-    cur = conn.cursor()
-    placeholders = ', '.join(['?'] * len(data))
-    query = f"INSERT INTO {TABLE_NAME} ({', '.join(data.keys())}) VALUES ({placeholders})"
-    cur.execute(query, tuple(data.values()))
-    conn.commit()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        placeholders = ', '.join(['?'] * len(data))
+        query = f"INSERT INTO {TABLE_NAME} ({', '.join(data.keys())}) VALUES ({placeholders})"
+        cur.execute(query, tuple(data.values()))
+        conn.commit()
+    except Exception as e:
+        st.error(f"Error inserting data: {e}")
 
 def update_row(id_val, data):
-    conn = get_connection()
-    cur = conn.cursor()
-    set_clause = ', '.join([f"{col}=?" for col in data])
-    query = f"UPDATE {TABLE_NAME} SET {set_clause} WHERE id = ?"
-    cur.execute(query, tuple(data.values()) + (id_val,))
-    conn.commit()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        set_clause = ', '.join([f"{col}=?" for col in data])
+        query = f"UPDATE {TABLE_NAME} SET {set_clause} WHERE id = ?"
+        cur.execute(query, tuple(data.values()) + (id_val,))
+        conn.commit()
+    except Exception as e:
+        st.error(f"Error updating data: {e}")
 
 def delete_row(id_val):
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute(f"DELETE FROM {TABLE_NAME} WHERE id = ?", (id_val,))
-    conn.commit()
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(f"DELETE FROM {TABLE_NAME} WHERE id = ?", (id_val,))
+        conn.commit()
+    except Exception as e:
+        st.error(f"Error deleting data: {e}")
 
 def transfer_age(from_id, to_id, amount):
     conn = get_connection()
