@@ -112,14 +112,33 @@ if rows:
         delete_row(delete_id)
         st.warning("Record deleted.")
 
-    # --- Transaction: Transfer Age ---
-    st.subheader("Transfer Age Between Users (Transactional)")
-    from_id = st.selectbox("From (User ID)", row_ids, key="from_id")
-    to_id = st.selectbox("To (User ID)", [i for i in row_ids if i != from_id], key="to_id")
-    amount = st.number_input("Amount to Transfer", min_value=1, step=1)
-    if st.button("Transfer Age"):
-        success, msg = transfer_age(from_id, to_id, amount)
-        if success:
-            st.success(msg)
-        else:
-            st.error(msg)
+    
+# --- Transaction: Transfer Age ---
+st.subheader("Transfer Age Between Users (Transactional)")
+
+# Create name-to-id and id-to-name mappings
+name_id_map = {f"{row['name']} (ID {row['id']})": row['id'] for row in rows}
+id_name_map = {row['id']: row['name'] for row in rows}
+id_age_map = {row['id']: row['age'] for row in rows}
+
+from_name = st.selectbox("From (User)", list(name_id_map.keys()), key="from_user")
+to_name_options = [n for n in name_id_map.keys() if n != from_name]
+to_name = st.selectbox("To (User)", to_name_options, key="to_user")
+
+from_id = name_id_map[from_name]
+to_id = name_id_map[to_name]
+
+st.markdown(f"**{id_name_map[from_id]}'s current age:** {id_age_map[from_id]}")
+st.markdown(f"**{id_name_map[to_id]}'s current age:** {id_age_map[to_id]}")
+
+amount = st.number_input("How many years to transfer (subtract from sender and add to recipient)", min_value=1, step=1)
+
+if st.button("Transfer Age"):
+    success, msg = transfer_age(from_id, to_id, amount)
+    if success:
+        st.success(msg)
+    else:
+        st.error(msg)
+
+# ---
+
