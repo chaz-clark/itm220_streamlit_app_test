@@ -5,6 +5,9 @@ from config import DB_PATH, TABLE_NAME, COLUMNS
 # Connect to SQLite DB
 @st.cache_resource
 def get_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
     return sqlite3.connect(DB_PATH)
 
 def fetch_all():
