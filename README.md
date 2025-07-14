@@ -1,6 +1,6 @@
 [![View in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://itm220appapptest-cpcjhoquckesa9crpj5ref.streamlit.app)
 
----
+---xc 
 
 🔧 Streamlit CRUD App (SQLite Version)
 
@@ -42,10 +42,10 @@ Before deploying anything, get it working on your own machine.
 
 ```bash
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
-The app will open in your browser at `http://localhost:8501`.
+The app will open in your browser at `http://localhost:8501`. If it doesn't open, try a different browser and copy the URL manually.
 
 Explore the sample app with preloaded users (`Alice`, `Bob`, `Charlie`). Try adding, editing, deleting users, and transferring age.
 
