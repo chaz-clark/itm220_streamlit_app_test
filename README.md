@@ -112,6 +112,7 @@ def get_connection():
 ### 📤 Step 6: Point to Your Existing Table
 
 You’ve already been working on your MySQL database all semester — great!  
+Make sure you are not running this code inside a container or virtual environment that doesn't have access to your MySQL server. If you are, please see the README_container.md for instructions on how to set up the connection properly.
 You **do not need to create a new table or insert sample data**, just ensure the app refers to the correct database and table you already have.
 
 In `config.py`, set the name of the table and columns that match your project:
