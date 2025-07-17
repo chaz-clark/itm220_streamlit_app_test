@@ -1,14 +1,12 @@
+# 🔧 Streamlit CRUD App (SQLite + Local MySQL Version)
+
 [![View in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://itm220appapptest-cpcjhoquckesa9crpj5ref.streamlit.app)
 
----xc 
-
-🔧 Streamlit CRUD App (SQLite Version)
-
 This is a simple, fully functional Streamlit web app for performing:
-	•	CRUD operations (Create, Read, Update, Delete)
-	•	A real-world SQL transaction: transferring values between rows using safe, rollback-enabled logic
+- CRUD operations (Create, Read, Update, Delete)
+- A real-world SQL transaction: transferring values between rows using safe, rollback-enabled logic
 
-It uses a SQLite database and is designed for educational use, ideal for learning database logic and deploying on Streamlit Community Cloud.
+It uses a **SQLite** database by default for demonstration, and also includes a template for connecting to a **local MySQL database** — ideal for learning database logic and deploying on Streamlit Community Cloud.
 
 ---
 
@@ -16,17 +14,18 @@ It uses a SQLite database and is designed for educational use, ideal for learnin
 
 ```
 .
-├── app.py               # Main Streamlit app
-├── config.py            # Database/table/column settings
-├── requirements.txt     # For deployment
-├── database.sqlite      # Sample SQLite database
+├── streamlit_app.py              # Main Streamlit app (SQLite)
+├── streamlit_app_local_mysql.py  # Streamlit app template for local MySQL
+├── config.py                     # Table/column settings
+├── requirements.txt              # Dependencies
+├── database.sqlite               # Sample SQLite database
 ```
 
 ---
 
 ## 🚀 Step-by-Step Guide (For Students)
 
-### ✅ Step 1: Run the App Locally First
+### ✅ Step 1: Run the Sample App Locally
 
 Before deploying anything, get it working on your own machine.
 
@@ -35,7 +34,6 @@ Before deploying anything, get it working on your own machine.
 - pip (Python package installer)
 
 #### 🔧 Setup Instructions:
-
 1. Clone or download this repo
 2. Open a terminal in the repo folder
 3. Run:
@@ -45,13 +43,14 @@ pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-The app will open in your browser at `http://localhost:8501`. If it doesn't open, try a different browser and copy the URL manually.
+The app will open in your browser at `http://localhost:8501`.  
+If it doesn't open, try a different browser and copy the URL manually.
 
 Explore the sample app with preloaded users (`Alice`, `Bob`, `Charlie`). Try adding, editing, deleting users, and transferring age.
 
 ---
 
-### ☁️ Step 2: Deploy the Working Example to the Cloud
+### ☁️ Step 2 (optional): Deploy the Working Example to the Cloud
 
 After running locally and confirming it works:
 
@@ -65,7 +64,7 @@ After running locally and confirming it works:
 - A sample SQLite DB (`database.sqlite`)
 - Features:
   - Add, edit, delete users
-  - Transfer age between users (see Step 4)
+  - Transfer age between users
 
 ---
 
@@ -82,56 +81,58 @@ This gives you a feel for how the app works before using your own data.
 
 ---
 
-### ⚙️ Step 4: Update Config for Your Own Table
+## 🔄 Step 4: Switch to Your Own MySQL Database (Local)
 
-When you're ready to use your own database:
-
-1. Open `config.py` and update:
-   - `DB_PATH` to your new `.sqlite` file name
-   - `TABLE_NAME` to match your own table
-   - `COLUMNS` with the field names (excluding `id`)
-
-2. Replace `database.sqlite` with your exported version.
+When you're ready to use your own **local MySQL database**, use the `streamlit_app_local_mysql.py` template.
 
 ---
 
-### 🔄 Step 5: Export Your MySQL DB to SQLite
+### ⚙️ Step 5: Update the MySQL Connection
 
-Use a tool like DB Browser for SQLite, or try this approach:
+In `streamlit_app_local_mysql.py`, locate the `get_connection()` function and replace the placeholder values with your own MySQL credentials:
 
-```bash
-# Export MySQL to SQL
-mysqldump -u your_user -p your_db > dump.sql
-
-# Convert SQL to SQLite (optional method)
-pip install sqlite-utils
-sqlite-utils convert dump.sql database.sqlite
+```python
+def get_connection():
+    try:
+        conn = mysql.connector.connect(
+            host="127.0.0.1",    # or "localhost"
+            port=3306,
+            user="your_user",         # your MySQL username
+            password="your_password", # your MySQL password
+            database="your_database"  # your existing database name
+        )
+        return conn
+    except mysql.connector.Error as e:
+        st.error(f"Error connecting to MySQL: {e}")
+        return None
 ```
 
-Once your new `.sqlite` file is in place, commit the change to GitHub — your deployed app will automatically update.
-
 ---
 
-### 🔁 Step 6: Test the "Transfer Age" Transaction
+### 📤 Step 6: Point to Your Existing Table
 
-Once your app is running, scroll to the section titled:
+You’ve already been working on your MySQL database all semester — great!  
+You **do not need to create a new table or insert sample data**, just ensure the app refers to the correct database and table you already have.
 
-> **"Transfer Age Between Users (Transactional)"**
+In `config.py`, set the name of the table and columns that match your project:
 
-#### What It Does:
-- Transfers a specified number of "age years" from one user to another.
-- Both updates occur in a **single transaction** — if anything fails, nothing is changed.
+```python
+TABLE_NAME = "your_table_name"
 
-#### ✅ To Try It:
-1. Select a user in the **"From (User ID)"** dropdown.
-2. Select a different user in the **"To (User ID)"** dropdown.
-3. Enter an age value to transfer (e.g. `2`).
-4. Click **"Transfer Age"**.
+COLUMNS = {
+    "name": "VARCHAR(255)",
+    "email": "VARCHAR(255)",
+    "age": "INT"
+}
+```
 
-#### ⚠️ Edge Cases:
-- If the **"from" user** doesn’t have enough age, the transaction fails.
-- Selecting the same user for both fields is prevented.
-- Errors are displayed clearly, and the DB rolls back automatically.
+Once configured, run the app:
+
+```bash
+streamlit run streamlit_app_local_mysql.py
+```
+
+Test the CRUD operations and transfer-age feature with your own MySQL database.
 
 ---
 
@@ -140,17 +141,14 @@ Once your app is running, scroll to the section titled:
 This template is meant for:
 - Class projects
 - Assignments with database components
-- Lightweight app demos with local DBs
-
-Want more private app slots or memory on Streamlit Cloud? Contact: `support@streamlit.io`
+- Lightweight app demos with local or remote DBs
 
 ---
 
-⚠️ Heads-up: When deployed to Streamlit Cloud, your data won’t persist between app restarts or redeploys.
-This is because the app reloads the original database file from GitHub each time.
+⚠️ **Heads-up:** When deployed to Streamlit Cloud using SQLite, your data won’t persist between app restarts or redeploys (because it reloads the original file from GitHub).
 
 ✅ If you want to keep your data:
-	•	Run the app locally (streamlit run streamlit_app.py)
-	•	Or use a cloud-hosted database (like Supabase or MySQL)
+- Run the app locally
+- Or connect it to a cloud-hosted database (like PlanetScale or MySQL)
 
 ---
